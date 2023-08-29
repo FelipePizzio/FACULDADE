@@ -1,10 +1,10 @@
 package org.acme;
 
 public class Coffee {
-    public Integer id;
-    public String name;
-    public String countryOfOrigin;
-    public Integer price;
+    Integer id;
+    String name;
+    String countryOfOrigin;
+    Integer price;
 
     public Coffee() {
     }

@@ -28,6 +28,8 @@ public class CoffeeResource {
 
     private static final Logger LOGGER = Logger.getLogger(CoffeeResource.class);
 
+    private Random random = new Random();
+
     @Inject
     CoffeeRepositoryService coffeeRepository;
 
@@ -124,6 +126,7 @@ public class CoffeeResource {
         } catch (InterruptedException e) {
             LOGGER.errorf("CoffeeResource#recommendations() invocation #%d timed out after %d ms",
                     invocationNumber, System.currentTimeMillis() - started);
+            Thread.currentThread().interrupt();
             return null;
         }
     }
@@ -131,7 +134,7 @@ public class CoffeeResource {
     /**
      * A fallback method for recommendations.
      */
-    public List<Coffee> fallbackRecommendations(int id) {
+    public List<Coffee> fallbackRecommendations() {
         LOGGER.info("Falling back to RecommendationResource#fallbackRecommendations()");
         // safe bet, return something that everybody likes
         return Collections.singletonList(coffeeRepository.getCoffeeById(1));
@@ -139,7 +142,7 @@ public class CoffeeResource {
 
     private void maybeFail(String failureLogMessage) {
         // introduce some artificial failures
-        if (new Random().nextFloat() < failRatio) {
+        if (random.nextFloat() < failRatio) {
             LOGGER.error(failureLogMessage);
             throw new RuntimeException("Resource failure.");
         }
@@ -147,7 +150,7 @@ public class CoffeeResource {
 
     private void randomDelay() throws InterruptedException {
         // introduce some artificial delay
-        Thread.sleep(new Random().nextInt(500));
+        Thread.sleep(random.nextInt(500));
     }
 
     void setFailRatio(Float failRatio) {
